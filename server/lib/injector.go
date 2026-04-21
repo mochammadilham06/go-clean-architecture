@@ -4,9 +4,9 @@
 package lib
 
 import (
-	"go-portfolio/server/lib/database"
-	"go-portfolio/server/lib/environment"
-	"go-portfolio/server/lib/logger"
+	"go-clean-architecture/server/lib/database"
+	"go-clean-architecture/server/lib/environment"
+	"go-clean-architecture/server/lib/logger"
 
 	"github.com/google/wire"
 )

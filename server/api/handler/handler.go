@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"go-portfolio/server/api/contract"
-	"go-portfolio/server/lib/logger"
+	"go-clean-architecture/server/api/contract"
+	"go-clean-architecture/server/lib/logger"
 
 	"github.com/gin-gonic/gin"
 )

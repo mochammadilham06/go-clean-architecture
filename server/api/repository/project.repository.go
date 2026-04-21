@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"go-portfolio/server/api/models"
+	"go-clean-architecture/server/api/models"
 )
 
 type ProjectRepository struct {

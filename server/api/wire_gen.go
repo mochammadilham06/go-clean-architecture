@@ -8,19 +8,19 @@ package api
 
 import (
 	"github.com/google/wire"
-	"go-portfolio/server/api/contract"
-	"go-portfolio/server/api/handler"
-	"go-portfolio/server/api/repository"
-	"go-portfolio/server/api/service"
-	"go-portfolio/server/lib/database"
-	"go-portfolio/server/lib/environment"
-	"go-portfolio/server/lib/logger"
+	"go-clean-architecture/pkg/rabbitmq"
+	"go-clean-architecture/server/api/contract"
+	"go-clean-architecture/server/api/handler"
+	"go-clean-architecture/server/api/repository"
+	"go-clean-architecture/server/api/service"
+	"go-clean-architecture/server/lib/database"
+	"go-clean-architecture/server/lib/environment"
+	"go-clean-architecture/server/lib/logger"
 )
 
 // Injectors from wire.go:
 
-// 3. Injector
-func InitializeAPI(cfg *environment.Config, log *logger.Logger) (*handler.Handler, error) {
+func InitializeAPI(cfg *environment.Config, log *logger.Logger) (*App, error) {
 	db, err := database.ProvideSQLDatabase(cfg)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,13 @@ func InitializeAPI(cfg *environment.Config, log *logger.Logger) (*handler.Handle
 	experienceRepository := repository.NewExperienceRepository(db)
 	experienceService := service.NewExperienceService(experienceRepository, log)
 	handlerHandler := handler.NewHandler(projectService, experienceService, log)
-	return handlerHandler, nil
+	rabbitMQClient, err := pkg.NewRabbitMQConnectionFromConfig(cfg)
+	if err != nil {
+		return nil, err
+	}
+	messagePublisher := repository.NewRabbitMQPublisherFromConfig(rabbitMQClient)
+	app := NewApp(handlerHandler, rabbitMQClient, messagePublisher)
+	return app, nil
 }
 
 // wire.go:
@@ -38,5 +44,7 @@ func InitializeAPI(cfg *environment.Config, log *logger.Logger) (*handler.Handle
 // Grouping services
 var ProjectSet = wire.NewSet(repository.NewProjectRepository, wire.Bind(new(contract.IProjectRepository), new(*repository.ProjectRepository)), service.NewProjectService, wire.Bind(new(contract.IProjectService), new(*service.ProjectService)))
 
-// 2.experience services
 var ExperienceSet = wire.NewSet(repository.NewExperienceRepository, wire.Bind(new(contract.IExperienceRepository), new(*repository.ExperienceRepository)), service.NewExperienceService, wire.Bind(new(contract.IExperienceService), new(*service.ExperienceService)))
+
+// PERUBAHAN DI SINI: Gunakan fungsi FromConfig agar wire tidak bingung mencari string parameter
+var RabbitMQSet = wire.NewSet(pkg.NewRabbitMQConnectionFromConfig, repository.NewRabbitMQPublisherFromConfig)

@@ -2,7 +2,7 @@ package contract
 
 import (
 	"context"
-	"go-portfolio/server/api/models"
+	"go-clean-architecture/server/api/models"
 )
 
 type IProjectService interface {

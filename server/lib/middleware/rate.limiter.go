@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"go-portfolio/server/api/response"
-	"go-portfolio/server/lib/environment"
+	"go-clean-architecture/server/api/response"
+	"go-clean-architecture/server/lib/environment"
 	"log"
 	"net/http"
 	"sync"

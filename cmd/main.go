@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 
-	"go-portfolio/docs"
-	"go-portfolio/server/api"
-	"go-portfolio/server/lib/environment"
-	"go-portfolio/server/lib/logger"
-	"go-portfolio/server/lib/middleware"
+	"go-clean-architecture/docs"
+	"go-clean-architecture/server/api"
+	"go-clean-architecture/server/lib/environment"
+	"go-clean-architecture/server/lib/logger"
+	"go-clean-architecture/server/lib/middleware"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -15,7 +15,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"     // Dependency Swagger
 	ginSwagger "github.com/swaggo/gin-swagger" // Dependency Swagger
 
-	_ "go-portfolio/docs" // Swagger Docs
+	_ "go-clean-architecture/docs" // Swagger Docs
 )
 
 func main() {
@@ -29,10 +29,18 @@ func main() {
 		_ = appLogger.Sync()
 	}()
 
-	h, err := api.InitializeAPI(cfg, appLogger)
+	app, err := api.InitializeAPI(cfg, appLogger)
 	if err != nil {
 		appLogger.Fatal("Failed to initialize application (Wire)", zap.Error(err))
 	}
+
+	// 2. Setup Graceful Shutdown untuk RabbitMQ
+	defer func() {
+		appLogger.Info("Closing RabbitMQ connection...")
+		if app.RabbitMQ != nil {
+			app.RabbitMQ.Close()
+		}
+	}()
 
 	if cfg.APP_ENV == "production" {
 		gin.SetMode(gin.ReleaseMode)
@@ -50,7 +58,7 @@ func main() {
 	r.Use(middleware.RateLimitMiddleware(cfg))
 
 	//register gin and swagger
-	h.Register(r)
+	app.Handler.Register(r)
 	registerSwagger(r, cfg, appLogger)
 
 	//run app

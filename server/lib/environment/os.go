@@ -13,7 +13,7 @@ import (
 )
 
 type Config struct {
-	APP_NAME      string `mapstructure:"APP_NAME" default:"go-portfolio"`
+	APP_NAME      string `mapstructure:"APP_NAME" default:"go-clean-architecture"`
 	APP_ENV       string `mapstruture:"APP_ENV" default:"local"`
 	APP_SECURE    bool   `mapstructure:"APP_SECURE" default:"false"`
 	APP_DEBUG     bool   `mapstructure:"APP_DEBUG" default:"true"`
@@ -32,6 +32,11 @@ type Config struct {
 	RATE_LIMITER_RPS   float64 `mapstructure:"RATE_LIMITER_RPS" default:"20"`
 	RATE_LIMITER_BURST int     `mapstructure:"RATE_LIMITER_BURST" default:"5"`
 	ALLOWED_ORIGINS    string  `mapstructure:"ALLOWED_ORIGINS"`
+
+	QUEUE_HOST     string `mapstructure:"QUEUE_HOST"`
+	QUEUE_PORT     int    `mapstructure:"QUEUE_PORT"`
+	QUEUE_USER     string `mapstructure:"QUEUE_USER"`
+	QUEUE_PASSWORD string `mapstructure:"QUEUE_PASSWORD"`
 
 	// Add more configuration fields as needed
 }

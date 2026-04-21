@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-portfolio/server/lib/environment"
+	"go-clean-architecture/server/lib/environment"
 	"log"
 	"strings"
 	"time"

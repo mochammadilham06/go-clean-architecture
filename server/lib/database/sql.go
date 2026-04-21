@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"go-portfolio/server/lib/environment"
+	"go-clean-architecture/server/lib/environment"
 	"log"
 	"time"
 
