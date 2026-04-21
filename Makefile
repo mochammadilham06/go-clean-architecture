@@ -18,7 +18,7 @@ wire :
 	@echo "Wire generate"
 	@wire ./server/api
 
-	.PHONY: lint audit
+.PHONY: lint audit
 
 tidy:
 	go mod tidy
